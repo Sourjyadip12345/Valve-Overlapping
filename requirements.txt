@@ -5,7 +5,5 @@ Pillow
 requests
 scikit-learn
 streamlit
-streamlit-option-menu
-toml
 htbuilder
 st_aggrid
