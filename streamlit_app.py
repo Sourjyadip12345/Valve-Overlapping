@@ -56,7 +56,7 @@ def home():
 def analysis():
     
     st.sidebar.header("Data Analysis")
-    num_data_points = st.sidebar.number_input("Number of Valves", min_value=1, max_value=100, value=10)
+    num_data_points = st.sidebar.number_input("Number of wells", min_value=1, max_value=100, value=10)
     
     data_table = pd.DataFrame(index=range(num_data_points), columns=['Well #', 'Valve closing time', 'Valve opening time','Priority'])
     
