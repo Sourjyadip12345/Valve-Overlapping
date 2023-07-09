@@ -6,4 +6,4 @@ requests
 scikit-learn
 streamlit
 htbuilder
-st_aggrid
+streamlit-aggrid
