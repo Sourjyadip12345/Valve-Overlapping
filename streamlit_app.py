@@ -75,6 +75,7 @@ def analysis():
     st.markdown('# Enter input data below:')
     st.write("### Instruction:")
     st.write("- In priority column, if you want to give priority to a particular well then enter 1 else 0.")
+    st.write("- It might take a couple of minutes to generate the results. Please wait")
     grid_table = AgGrid(data_table,gridOptions=grid_options)
         
     
