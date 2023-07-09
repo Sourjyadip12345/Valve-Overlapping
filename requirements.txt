@@ -1,0 +1,10 @@
+matplotlib
+numpy
+pandas
+Pillow
+requests
+scikit-learn
+streamlit
+streamlit-option-menu
+toml
+htbuilder
