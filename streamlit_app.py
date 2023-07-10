@@ -10,7 +10,7 @@ from htbuilder.units import percent, px
 from htbuilder.funcs import rgba, rgb
 
 
-st.set_page_config(page_title="Valve Scheduling", page_icon=":bar_chart:")
+st.set_page_config(page_title="Valve Scheduling", page_icon=":one_oclock:")
 
 def home():
     img_glv = Image.open("images/glv.jpg")
