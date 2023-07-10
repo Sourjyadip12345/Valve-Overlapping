@@ -154,14 +154,14 @@ def analysis():
             st.write("---")
             st.write('## Observations:')
             st.write("- Maximum valves overlap: "+str(max(sum_timings)))
-            st.write("- Maximum valve overlap count (in minutes): "+str(overlap_number))
+            st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
             if priority_number==0:
                 st.write("- For priority wells overlapping with other wells has been avoided successfully :)")
             else:
-                st.write("- Valve overlapping is inevitable with the given the given valve timings :|")
+                st.write("- Valve overlapping is inevitable with the given the given valve timings :| However, minimum overlapping scheduling is done.")
 
             st.write("---")
-            st.write("## Indicative valve overlapping:")
+            st.write("## Indicative valve overlapping diagram:")
             st.pyplot(fig)
             #st.write(input_valves)
 
