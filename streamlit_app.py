@@ -63,8 +63,8 @@ def analysis():
     grid_options = {
         'columnDefs': [
             {'headerName': 'Well No.', 'field': 'Well #', 'width': 150, 'editable': True},
-            {'headerName': 'Valve closing time', 'field': 'Valve closing time', 'width': 200, 'editable': True},
-            {'headerName': 'Valve opening time', 'field': 'Valve opening time', 'width': 200, 'editable': True},
+            {'headerName': 'Gas Injection OFF time, min', 'field': 'Valve closing time', 'width': 200, 'editable': True},
+            {'headerName': 'Gas Injection ON time, min', 'field': 'Valve opening time', 'width': 200, 'editable': True},
             {'headerName': 'Priority', 'field': 'Priority', 'width': 150, 'editable': True},
         ],
         'headerHeight': 50,  # Adjust the header height
