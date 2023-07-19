@@ -173,7 +173,7 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
             
                 
             schedule.append(count0+count1)
-
+        
         schedule=[x-min(schedule) for x in schedule]
         return schedule
 
@@ -181,6 +181,66 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
     priority_number=priority_value(best_chromosome)
     overlap_number=sum_timings.count(max(sum_timings))
     #print("LCM is:",LCM)
-    
+    schedule=scheduling(best_chromosome)
 
-    return scheduling(best_chromosome),sum_timings,overlap_number,priority_number
+    def scheduled_valves(best_chromosome,schedule):
+        scheduled_timings=[]
+
+        for i in range(len(best_chromosome)):
+            gene=best_chromosome[i]
+            s=schedule[i]
+            gene=[np.concatenate((np.zeros(s),np.ones(sum(gene)),np.zeros(len(gene)-s-sum(gene))))]
+            scheduled_timings.append(gene)
+        #print(scheduled_timings)
+        scheduled_sum_timings=[sum(x) for x in zip(*scheduled_timings)]
+
+        return scheduled_sum_timings
+
+    scheduled_sum_timings=scheduled_valves(best_chromosome=best_chromosome,schedule=schedule)
+
+    return schedule,scheduled_sum_timings,overlap_number,priority_number
+
+
+input_valves=[(55,5,1),(45,15,1)]
+valve_overlapping(input_valves=input_valves)
+'''
+normal_calculation=True
+
+if normal_calculation==False:
+    population_size=500
+    gen_theshold=100
+else:
+    population_size=200
+    gen_theshold=20
+
+schedule,sum_timings,overlap_number,priority_number=valve_overlapping(input_valves,population_size=population_size,gen_theshold=gen_theshold)
+
+print("Maximum Overlap Value Count:",overlap_number)
+print("Priority Value:",priority_number)
+print("Valve schedule",schedule)
+
+time=np.arange(0, min(len(sum_timings),241))
+valve_numbers=sum_timings[:241]
+
+# Plot the orthogonal step function
+fig,ax=plt.subplots(figsize=(12, 4))
+
+for i in range(len(time) - 1):
+    ax.plot([time[i], time[i + 1]], [valve_numbers[i], valve_numbers[i]], color='blue')
+    ax.plot([time[i + 1], time[i + 1]], [valve_numbers[i], valve_numbers[i + 1]], color='blue')
+    x = [time[i], time[i + 1], time[i + 1], time[i]]
+    y = [valve_numbers[i], valve_numbers[i], 0, 0]
+    ax.fill(x, y, color='lightblue', alpha=0.5)
+#ax.plot(sum_timings[:240], linestyle='-', color='black')
+
+
+y_ticks = range(0, max(sum_timings)+3,1)
+x_ticks = range(0, min(len(sum_timings),241)+20,10)
+plt.yticks(y_ticks)
+plt.xticks(x_ticks)
+ax.set_title('Indicative valve overlapping')
+ax.set_xlabel('Time in minute')
+ax.set_ylabel('Valve overlap count')
+ax.grid(color='lightgray', linestyle='--')
+plt.show()
+'''
