@@ -1,6 +1,5 @@
 from valve_overlapping_genetic_algo import *
 import streamlit as st
-from st_aggrid import AgGrid
 import pandas as pd
 from PIL import Image
 from st_aggrid import AgGrid, GridUpdateMode, JsCode
@@ -56,15 +55,15 @@ def home():
 def analysis():
     
     st.sidebar.header("Data Analysis")
-    num_data_points = st.sidebar.number_input("Number of wells", min_value=1, max_value=100, value=10)
+    num_data_points = st.sidebar.number_input("Number of wells", min_value=1, max_value=100, value=2)
     
-    data_table = pd.DataFrame(index=range(num_data_points), columns=['Well #', 'Valve closing time', 'Valve opening time','Priority'])
+    data_table = pd.DataFrame(index=range(num_data_points), columns=['Well No', 'Gas Injection OFF time, min', 'Gas Injection ON time, min','Priority'])
     
     grid_options = {
         'columnDefs': [
-            {'headerName': 'Well No.', 'field': 'Well #', 'width': 150, 'editable': True},
-            {'headerName': 'Gas Injection OFF time, min', 'field': 'Valve closing time', 'width': 200, 'editable': True},
-            {'headerName': 'Gas Injection ON time, min', 'field': 'Valve opening time', 'width': 200, 'editable': True},
+            {'headerName': 'Well No.', 'field': 'Well No', 'width': 150, 'editable': True},
+            {'headerName': 'Gas Injection OFF time, min', 'field': 'Gas Injection OFF time, min', 'width': 200, 'editable': True},
+            {'headerName': 'Gas Injection ON time, min', 'field': 'Gas Injection ON time, min', 'width': 200, 'editable': True},
             {'headerName': 'Priority', 'field': 'Priority', 'width': 150, 'editable': True},
         ],
         'headerHeight': 50,  # Adjust the header height
@@ -85,15 +84,16 @@ def analysis():
             calculate_button = st.button('Calculate')
     try:
         if calculate_button:
-            
+            #st.write(data_table.columns)
             data_table=pd.DataFrame(grid_table['data'])
-            data_table["Well #"]=data_table["Well #"].astype(str)
-            data_table["Valve closing time"]=data_table["Valve closing time"].astype(int)
-            data_table["Valve opening time"]=data_table["Valve opening time"].astype(int)
+            data_table["Well No"]=data_table["Well No"].astype(str)
+            data_table["Gas Injection OFF time, min"]=data_table["Gas Injection OFF time, min"].astype(int)
+            data_table["Gas Injection ON time, min"]=data_table["Gas Injection ON time, min"].astype(int)            
             data_table.replace("None", 0, inplace=True)
             data_table["Priority"]=data_table["Priority"].astype(int)
             
             data_tuples = data_table.values.T.tolist()
+            
 
             input_valves=[]
 
@@ -111,11 +111,11 @@ def analysis():
                 gen_theshold=20
 
             schedule,sum_timings,overlap_number,priority_number=valve_overlapping(input_valves,population_size=population_size,gen_theshold=gen_theshold)
-
+            sum_timings=list(itertools.chain.from_iterable(sum_timings))
             #print("Maximum Overlap Value Count:",overlap_number)
             #print("Priority Value:",priority_number)
             #print("Valve schedule",schedule)
-
+            #st.write(sum_timings)
             time=np.arange(0, len(sum_timings))
             valve_numbers=sum_timings
 
@@ -129,9 +129,12 @@ def analysis():
                 y = [valve_numbers[i], valve_numbers[i], 0, 0]
                 ax.fill(x, y, color='lightblue', alpha=0.5)
             #ax.plot(sum_timings[:240], linestyle='-', color='black')
+            for value in schedule:
+                ax.arrow(value,-0.2, 0, 0.2, head_width=0.5, head_length=0.3, fc='black', ec='black')
 
-
-            y_ticks = range(0, max(sum_timings)+3,1)
+            #st.write(max(sum_timings))
+            #st.write("run")
+            y_ticks = range(0, int(max(sum_timings))+3,1)
             #x_ticks = range(0, min(len(sum_timings),241)+20,10)
             plt.yticks(y_ticks)
             #plt.xticks(x_ticks)
@@ -151,15 +154,7 @@ def analysis():
             ax.set_ylabel('Valve overlap count')
             ax.grid(color='lightgray', linestyle='--')
             #plt.show()
-            st.write("---")
-            st.write('## Observations:')
-            st.write("- Maximum valves overlap: "+str(max(sum_timings)))
-            st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
-            if priority_number==0:
-                st.write("- For priority wells overlapping with other wells has been avoided successfully :)")
-            else:
-                st.write("- Valve overlapping is inevitable with the given the given valve timings :| However, minimum overlapping scheduling is done.")
-
+            
             st.write("---")
             st.write("## Indicative valve overlapping diagram:")
             st.pyplot(fig)
@@ -178,10 +173,11 @@ def analysis():
             #print(data_table)
             data_table["Timings"]=timings
             #st.write(data_table.columns)
-            data_table=data_table.set_index('Well #')
+            data_table=data_table.set_index('Well No')
             #data_table.reset_index(drop=True, inplace=False)
 
             #print(data_table)
+            
             st.write("---")
             st.write("## Scheduling table for valves:")
             st.write("- 9:00 AM is taken as reference time")
@@ -189,9 +185,21 @@ def analysis():
                 _,table=st.columns((0.1,2))
                 with table:
                     st.write(data_table)
+
+            st.write("---")
+            st.write('## Results:')
+            overlap_value=max(sum_timings) if max(sum_timings)>1 else "No Overlapping!"
+            st.write("- Maximum valves overlap: "+str(overlap_value))
+            #st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
+            if priority_number==0:
+                st.write("- For priority wells overlapping with other wells has been avoided successfully :)")
+            else:
+                st.write("- Valve overlapping is inevitable with the given the given valve timings :( However, minimum overlapping scheduling is done.")
+
             st.write("---")
             ###########HERE 
     except ValueError: 
+        #st.write(ValueError)
         st.warning("Data filled incorrectly! Please check again :)")
 
 def contact():
@@ -310,6 +318,3 @@ def main():
 if __name__ == "__main__":
     
     main()
-
-
-
