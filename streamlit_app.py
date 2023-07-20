@@ -204,7 +204,7 @@ def analysis():
             ax1.plot(sum_timings_set, sum_timings_frequency)
 
             # Plot the mean value as a dotted vertical line
-            ax1.axvline(x=mean, linestyle='dotted', color='red', label='Mean')
+            ax1.axvline(x=mean, linestyle='dotted', color='red', label='Mean is '+str(round(mean,2)))
             x_ticks=sum_timings_set
             #st.write(x_ticks)
             ax1.set_xticks(x_ticks)
