@@ -178,13 +178,46 @@ def analysis():
 
             #print(timings)
             #print(data_table)
-            data_table["Timings"]=timings
+            data_table["Cycle 1, ON"]=timings
+            data_table['Cycle 1, OFF']=schedule_to_time(schedule+data_table["Gas Injection ON time, min"])
+            data_table['Cycle 2, ON']=schedule_to_time(schedule+data_table["Gas Injection ON time, min"]+data_table["Gas Injection OFF time, min"])
+            data_table['Cycle 2, OFF']=schedule_to_time(schedule+data_table["Gas Injection ON time, min"]+data_table["Gas Injection OFF time, min"]+data_table["Gas Injection ON time, min"])
             #st.write(data_table.columns)
+            data_table.rename(columns={'Gas Injection ON time, min': 'GI ON time', 'Gas Injection OFF time, min': 'GI OFF time'}, inplace=True)
             data_table=data_table.set_index('Well No')
             #data_table.reset_index(drop=True, inplace=False)
 
             #print(data_table)
             
+            st.write("---")
+            #st.write("---")
+            st.write('## No. of gas injection wells VS Time utilization:')
+            fig1,ax1=plt.subplots(figsize=(8, 4))
+            sum_timings_set=list(set(int(x) for x in sum_timings))
+            sum_timings_frequency=[]
+            for i in sum_timings_set:
+                sum_timings_frequency.append(math.ceil(sum_timings.count(i)/len(sum_timings)*100*100)/100)
+            
+            mean=sum(sum_timings)/len(sum_timings)
+            
+            # Plot the data on the new axis
+            ax1.plot(sum_timings_set, sum_timings_frequency)
+
+            # Plot the mean value as a dotted vertical line
+            ax1.axvline(x=mean, linestyle='dotted', color='red', label='Mean')
+            x_ticks=sum_timings_set
+            #st.write(x_ticks)
+            ax1.set_xticks(x_ticks)
+            ax1.legend()
+            # Set labels for the axes and title
+            ax1.set_xlabel('No. of gas injection wells')
+            ax1.set_ylabel('Timing percentage of the day (%)')
+            #ax1.set_title('Continuous Straight Line Plot')
+
+            # Show the plot
+            st.pyplot(fig1)
+            
+
             st.write("---")
             st.write("## Gas injection scheduling table for wells:")
             st.write("- 9:00 AM is taken as reference time")
