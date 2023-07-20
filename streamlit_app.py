@@ -219,6 +219,7 @@ def analysis():
             
 
             st.write("---")
+            st.write("---")
             st.write("## Gas injection scheduling table for wells:")
             st.write("- 9:00 AM is taken as reference time")
             with st.container():
