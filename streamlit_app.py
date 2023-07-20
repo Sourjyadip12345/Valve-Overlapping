@@ -196,7 +196,7 @@ def analysis():
             st.write("---")
             st.write('## Results:')
             overlap_value=int(max(sum_timings)) if max(sum_timings)>1 else "No Overlapping!"
-            st.write("- Maximum wells overlap: "+str(overlap_value))
+            st.write("- Maximum wells where gas injection overlaps: "+str(overlap_value))
             #st.write("- Maximum wells overlap count (in minutes) in a cycle: "+str(overlap_number))
             if priority_number==0:
                 st.write("- For priority wells overlapping with other wells has been avoided successfully :)")
