@@ -6,7 +6,8 @@ from st_aggrid import AgGrid, GridUpdateMode, JsCode
 from st_aggrid.grid_options_builder import GridOptionsBuilder
 from htbuilder import HtmlElement, div, ul, li, br, hr, a, p, img, styles, classes, fonts
 from htbuilder.units import percent, px
-from htbuilder.funcs import rgba, rgb
+from htbuilder.funcs import rgba, RGB
+from matplotlib.font_manager import FontProperties
 
 
 st.set_page_config(page_title="Valve Scheduling", page_icon=":alarm_clock:")
@@ -129,6 +130,12 @@ def analysis():
                 y = [valve_numbers[i], valve_numbers[i], 0, 0]
                 ax.fill(x, y, color='lightblue', alpha=0.5)
             #ax.plot(sum_timings[:240], linestyle='-', color='black')
+            arrow_labels=data_table["Well No"].to_list()
+            font_properties = FontProperties(family='serif', size=15, weight='normal', style='italic')
+
+            for x_val, label in zip(schedule, arrow_labels):
+                ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -0.75), fontproperties=font_properties)
+                
             for value in schedule:
                 ax.arrow(value,-0.2, 0, 0.2, head_width=0.5, head_length=0.3, fc='black', ec='black')
 
