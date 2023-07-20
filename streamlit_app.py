@@ -186,7 +186,7 @@ def analysis():
             #print(data_table)
             
             st.write("---")
-            st.write("## Scheduling table for wells:")
+            st.write("## Gas injection scheduling table for wells:")
             st.write("- 9:00 AM is taken as reference time")
             with st.container():
                 _,table=st.columns((0.1,2))
