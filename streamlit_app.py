@@ -134,7 +134,7 @@ def analysis():
             font_properties = FontProperties(family='serif', size=15, weight='normal', style='italic')
 
             for x_val, label in zip(schedule, arrow_labels):
-                ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -0.75), fontproperties=font_properties)
+                ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -0.85), fontproperties=font_properties)
                 
             for value in schedule:
                 ax.arrow(value,-0.2, 0, 0.2, head_width=0.5, head_length=0.3, fc='black', ec='black')
