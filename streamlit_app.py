@@ -107,8 +107,8 @@ def analysis():
                 population_size=500
                 gen_theshold=100
             else:
-                population_size=200
-                gen_theshold=20
+                population_size=400
+                gen_theshold=40
 
             schedule,sum_timings,overlap_number,priority_number=valve_overlapping(input_valves,population_size=population_size,gen_theshold=gen_theshold)
             sum_timings=list(itertools.chain.from_iterable(sum_timings))
@@ -188,7 +188,7 @@ def analysis():
 
             st.write("---")
             st.write('## Results:')
-            overlap_value=max(sum_timings) if max(sum_timings)>1 else "No Overlapping!"
+            overlap_value=int(max(sum_timings)) if max(sum_timings)>1 else "No Overlapping!"
             st.write("- Maximum valves overlap: "+str(overlap_value))
             #st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
             if priority_number==0:
