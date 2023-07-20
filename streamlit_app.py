@@ -163,7 +163,7 @@ def analysis():
             #plt.show()
             
             st.write("---")
-            st.write("## Indicative well overlapping diagram:")
+            st.write("## Indicative gas injection overlapping diagram:")
             st.pyplot(fig)
             #st.write(input_valves)
 
