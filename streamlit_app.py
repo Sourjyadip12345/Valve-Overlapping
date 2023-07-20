@@ -201,7 +201,7 @@ def analysis():
             if priority_number==0:
                 st.write("- For priority wells overlapping with other wells has been avoided successfully :)")
             else:
-                st.write("- Well overlapping is inevitable with the given the given well timings :( However, minimum overlapping scheduling is done.")
+                st.write("- Well overlapping is there. However, minimum overlapping scheduling is tried.")
 
             st.write("---")
             ###########HERE 
