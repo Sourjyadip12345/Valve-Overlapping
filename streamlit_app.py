@@ -10,7 +10,7 @@ from htbuilder.funcs import rgba, RGB
 from matplotlib.font_manager import FontProperties
 
 
-st.set_page_config(page_title="Valve Scheduling", page_icon=":alarm_clock:")
+st.set_page_config(page_title="Well Scheduling", page_icon=":alarm_clock:")
 
 def home():
     img_glv = Image.open("images/glv.jpg")
