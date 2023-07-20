@@ -115,7 +115,7 @@ def analysis():
             sum_timings=list(itertools.chain.from_iterable(sum_timings))
             #print("Maximum Overlap Value Count:",overlap_number)
             #print("Priority Value:",priority_number)
-            #print("Valve schedule",schedule)
+            #print("Well schedule",schedule)
             #st.write(sum_timings)
             time=np.arange(0, len(sum_timings))
             valve_numbers=sum_timings
@@ -156,14 +156,14 @@ def analysis():
             # Set the x-axis limit to start from zero
             #plt.xlim(left=0)
 
-            #ax.set_title('Indicative valve overlapping curve')
+            #ax.set_title('Indicative well overlapping curve')
             ax.set_xlabel('Time in minute')
-            ax.set_ylabel('Valve overlap count')
+            ax.set_ylabel('Well overlap count')
             ax.grid(color='lightgray', linestyle='--')
             #plt.show()
             
             st.write("---")
-            st.write("## Indicative valve overlapping diagram:")
+            st.write("## Indicative well overlapping diagram:")
             st.pyplot(fig)
             #st.write(input_valves)
 
@@ -186,7 +186,7 @@ def analysis():
             #print(data_table)
             
             st.write("---")
-            st.write("## Scheduling table for valves:")
+            st.write("## Scheduling table for wells:")
             st.write("- 9:00 AM is taken as reference time")
             with st.container():
                 _,table=st.columns((0.1,2))
@@ -196,12 +196,12 @@ def analysis():
             st.write("---")
             st.write('## Results:')
             overlap_value=int(max(sum_timings)) if max(sum_timings)>1 else "No Overlapping!"
-            st.write("- Maximum valves overlap: "+str(overlap_value))
-            #st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
+            st.write("- Maximum wells overlap: "+str(overlap_value))
+            #st.write("- Maximum wells overlap count (in minutes) in a cycle: "+str(overlap_number))
             if priority_number==0:
                 st.write("- For priority wells overlapping with other wells has been avoided successfully :)")
             else:
-                st.write("- Valve overlapping is inevitable with the given the given valve timings :( However, minimum overlapping scheduling is done.")
+                st.write("- Well overlapping is inevitable with the given the given well timings :( However, minimum overlapping scheduling is done.")
 
             st.write("---")
             ###########HERE 
