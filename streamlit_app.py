@@ -132,10 +132,10 @@ def analysis():
             #ax.plot(sum_timings[:240], linestyle='-', color='black')
             arrow_labels=data_table["Well No"].to_list()
             font_properties = FontProperties(family='serif', size=15, weight='normal', style='italic')
-
+            '''
             for x_val, label in zip(schedule, arrow_labels):
                 ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.2), fontproperties=font_properties)
-                
+            '''    
             for value in schedule:
                 ax.arrow(value,-0.2, 0, 0.2, head_width=0.5, head_length=0.3, fc='black', ec='black')
 
