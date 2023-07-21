@@ -5,6 +5,7 @@ import itertools
 import random
 import statistics
 from sklearn.preprocessing import StandardScaler
+import pandas as pd
 
 #Valve closing then opening timings
 #input_valves=[(55,5,0),(45,15,0),(55,5,0),(230,10,0),(55,5,0),(55,5,0),(50,10,0),(45,15,0),(50,10,0)]
@@ -173,7 +174,6 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
             
                 
             schedule.append(count0+count1)
-        
         schedule=[x-min(schedule) for x in schedule]
         return schedule
 
@@ -182,19 +182,54 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
     overlap_number=sum_timings.count(max(sum_timings))
     #print("LCM is:",LCM)
     schedule=scheduling(best_chromosome)
+    
+    def scheduled_valves(schedule,input_valves):
+        sum_timings=[]
+        for i in range(len(input_valves)):
+            sum_timings.append((schedule[i]*[0]+input_valves[i][1]*[1]+(input_valves[i][0]-schedule[i])*[0])*int(LCM/(input_valves[i][0]+input_valves[i][1])))
+        df=pd.DataFrame(sum_timings)
+        sum_timings=df.sum(axis=0).to_list()
 
-    def scheduled_valves(sum_timings):
-        while sum_timings[0]==0:
-            sum_timings=sum_timings[1:]+[sum_timings[0]]
 
+        '''
+        leading_one=0
+        while sum_timings[0]!=0:
+            leading_one+=1
+        
+        one_list=[]
+        for i,j,k in input_valves:
+            one_list.append(j)
+
+        if leading_one<min(one_list):
+            while sum_timings[0]==1:
+                sum_timings=sum_timings[1:]+[sum_timings[0]]
+            while sum_timings[0]==0:
+                sum_timings=sum_timings[1:]+[sum_timings[0]]
+        '''
         return sum_timings
 
-    scheduled_sum_timings=scheduled_valves(sum_timings)
+    scheduled_sum_timings=scheduled_valves(schedule,input_valves)
+
+    '''
+    def scheduled_valves(best_chromosome,schedule):
+        scheduled_timings=[]
+
+        for i in range(len(best_chromosome)):
+            gene=best_chromosome[i]
+            s=schedule[i]
+            gene=[np.concatenate((np.zeros(s),np.ones(sum(gene)),np.zeros(len(gene)-s-sum(gene))))]
+            scheduled_timings.append(gene)
+        #print(scheduled_timings)
+        scheduled_sum_timings=[sum(x) for x in zip(*scheduled_timings)]
+
+        return scheduled_sum_timings
+    '''
+    
 
     return schedule,[scheduled_sum_timings],overlap_number,priority_number
 
 
-input_valves=[(55,5,1),(45,15,1)]
+input_valves=[(55,5,1),(40,5,1)]
 valve_overlapping(input_valves=input_valves)
 '''
 normal_calculation=True
