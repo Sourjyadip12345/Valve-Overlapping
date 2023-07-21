@@ -19,7 +19,53 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
         priority.append(k)
     total_time=[i+j for (i,j) in valves]
     LCM=math.lcm(*total_time)
+    #New Code start 
+    def manual_optimization(input_valves=input_valves,total_time=total_time,LCM=LCM):
+        possible=True
+        sum_timings_m=[]        
+        schedule_m=[]
+        if LCM not in total_time:
+            possible=False
+        #print(possible)    
+        for i in total_time:
+            if LCM%i!=0:
+                possible=False
+        #print(possible)           
+        open_time=[]
+        close_time=[]
+        for i,j,k in input_valves:
+            open_time.append(j)
+            close_time.append(i)
+          
+        total_injection_time=0
+        for i,j in zip(total_time,open_time):
+            total_injection_time+=(LCM//i)*j
+        
+        if total_injection_time>LCM:
+            possible=False
+        #print(possible) 
+        for i in open_time:
+            if i>min(close_time):
+                possible=False
+        #print(possible) 
+        if possible==True:
+            current_time=0
+            schedule_m=[]
+            sum_timings_m=[]
+            for i in range(len(input_valves)):
+                sum_timings_m.append((current_time*[0]+input_valves[i][1]*[1]+(input_valves[i][0]-current_time)*[0])*int(LCM/(input_valves[i][0]+input_valves[i][1])))
+                schedule_m.append(current_time)
+                current_time+=input_valves[i][1]
+            df=pd.DataFrame(sum_timings_m)
+            sum_timings_m=df.sum(axis=0).to_list()
+        
+        return possible,schedule_m,[sum_timings_m],0,0
+    
+    A,B,C,D,E=manual_optimization()
+    if A==True:
+        return B,C,D,E
 
+    #New code end
     #Create chromosome
     def create_chromosome(valves):
         chromosome=[]
