@@ -183,22 +183,15 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
     #print("LCM is:",LCM)
     schedule=scheduling(best_chromosome)
 
-    def scheduled_valves(best_chromosome,schedule):
-        scheduled_timings=[]
+    def scheduled_valves(sum_timings):
+        while sum_timings[0]==0:
+            sum_timings=sum_timings[1:]+[sum_timings[0]]
 
-        for i in range(len(best_chromosome)):
-            gene=best_chromosome[i]
-            s=schedule[i]
-            gene=[np.concatenate((np.zeros(s),np.ones(sum(gene)),np.zeros(len(gene)-s-sum(gene))))]
-            scheduled_timings.append(gene)
-        #print(scheduled_timings)
-        scheduled_sum_timings=[sum(x) for x in zip(*scheduled_timings)]
+        return sum_timings
 
-        return scheduled_sum_timings
+    scheduled_sum_timings=scheduled_valves(sum_timings)
 
-    scheduled_sum_timings=scheduled_valves(best_chromosome=best_chromosome,schedule=schedule)
-
-    return schedule,scheduled_sum_timings,overlap_number,priority_number
+    return schedule,[scheduled_sum_timings],overlap_number,priority_number
 
 
 input_valves=[(55,5,1),(45,15,1)]
