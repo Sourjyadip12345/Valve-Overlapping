@@ -6,7 +6,7 @@ from st_aggrid import AgGrid, GridUpdateMode, JsCode
 from st_aggrid.grid_options_builder import GridOptionsBuilder
 from htbuilder import HtmlElement, div, ul, li, br, hr, a, p, img, styles, classes, fonts
 from htbuilder.units import percent, px
-from htbuilder.funcs import rgba, RGB
+from htbuilder.funcs import rgba, rgb
 from matplotlib.font_manager import FontProperties
 
 
@@ -74,7 +74,7 @@ def analysis():
 
     st.markdown('# Enter input data below:')
     st.write("### Instruction:")
-    st.write("- In priority column, if you want to give priority to a particular well to avoid interferance with that well then enter 1 otherwise 0.")
+    st.write("- In priority column, if you want to give priority to a particular well then enter 1 else 0.")
     st.write("- It might take a couple of minutes to generate the results. Please wait.")
     grid_table = AgGrid(data_table,gridOptions=grid_options)
         
@@ -108,14 +108,14 @@ def analysis():
                 population_size=500
                 gen_theshold=100
             else:
-                population_size=400
-                gen_theshold=40
+                population_size=200
+                gen_theshold=20
 
             schedule,sum_timings,overlap_number,priority_number=valve_overlapping(input_valves,population_size=population_size,gen_theshold=gen_theshold)
             sum_timings=list(itertools.chain.from_iterable(sum_timings))
             #print("Maximum Overlap Value Count:",overlap_number)
             #print("Priority Value:",priority_number)
-            #print("Well schedule",schedule)
+            #print("Valve schedule",schedule)
             #st.write(sum_timings)
             time=np.arange(0, len(sum_timings))
             valve_numbers=sum_timings
@@ -131,14 +131,23 @@ def analysis():
                 ax.fill(x, y, color='lightblue', alpha=0.5)
             #ax.plot(sum_timings[:240], linestyle='-', color='black')
             arrow_labels=data_table["Well No"].to_list()
+         
             font_properties = FontProperties(family='serif', size=15, weight='normal', style='italic')
-            '''
-            for x_val, label in zip(schedule, arrow_labels):
-                ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.2), fontproperties=font_properties)
-            '''    
+            first=1
+            first_overlap=0
+            for x_val, label in sorted(zip(schedule, arrow_labels)):
+                if x_val==first_overlap:
+                    first_overlap=x_val
+                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.25*first), fontproperties=font_properties)
+                    first+=1
+                else:
+                    first=1
+                    first_overlap=x_val
+                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.25*first), fontproperties=font_properties)
+                    
             for value in schedule:
                 ax.arrow(value,-0.2, 0, 0.2, head_width=0.5, head_length=0.3, fc='black', ec='black')
-
+      
             #st.write(max(sum_timings))
             #st.write("run")
             y_ticks = range(0, int(max(sum_timings))+3,1)
@@ -156,14 +165,14 @@ def analysis():
             # Set the x-axis limit to start from zero
             #plt.xlim(left=0)
 
-            #ax.set_title('Indicative well overlapping curve')
+            #ax.set_title('Indicative valve overlapping curve')
             ax.set_xlabel('Time in minute')
             ax.set_ylabel('Well overlap count')
             ax.grid(color='lightgray', linestyle='--')
             #plt.show()
             
             st.write("---")
-            st.write("## Indicative gas injection overlapping diagram:")
+            st.write("## Indicative well overlapping diagram:")
             st.pyplot(fig)
             #st.write(input_valves)
 
@@ -218,9 +227,9 @@ def analysis():
             st.pyplot(fig1)
             
 
-            #st.write("---")
             st.write("---")
-            st.write("## Gas injection scheduling table for wells:")
+
+            st.write("## Scheduling table for wells:")
             st.write("- 9:00 AM is taken as reference time")
             with st.container():
                 _,table=st.columns((0.1,2))
@@ -230,17 +239,17 @@ def analysis():
             st.write("---")
             st.write('## Results:')
             overlap_value=int(max(sum_timings)) if max(sum_timings)>1 else "No Overlapping!"
-            st.write("- Maximum wells where gas injection overlaps: "+str(overlap_value))
-            #st.write("- Maximum wells overlap count (in minutes) in a cycle: "+str(overlap_number))
+            st.write("- Maximum well overlap: "+str(overlap_value))
+            #st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
             if priority_number==0:
-                st.write("- For priority wells overlapping with other wells has been avoided successfully :)")
+                st.write("- For priority wells overlapping with other wells has been avoided successfully")
             else:
-                st.write("- Well overlapping is there. However, minimum overlapping scheduling is tried.")
+                st.write("- Well overlapping is present for priority wells, however, minimum overlapping scheduling is done.")
 
             st.write("---")
             ###########HERE 
     except ValueError: 
-        #st.write(ValueError)
+        st.write(ValueError)
         st.warning("Data filled incorrectly! Please check again :)")
 
 def contact():
