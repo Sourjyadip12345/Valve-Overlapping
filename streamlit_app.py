@@ -137,13 +137,13 @@ def analysis():
             first_overlap=0
             for x_val, label in sorted(zip(schedule, arrow_labels)):
                 if x_val<=first_overlap:
-                    first_overlap=x_val+int(len(sum_timings)/60)
-                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.25*first), fontproperties=font_properties)
+                    first_overlap=x_val+int(len(sum_timings)/50)
+                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val-10.0, -1.25*first), fontproperties=font_properties)
                     first+=1
                 else:
                     first=1
-                    first_overlap=x_val
-                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.25*first), fontproperties=font_properties)
+                    first_overlap=x_val+int(len(sum_timings)/50)
+                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val-10.0, -1.25*first), fontproperties=font_properties)
                     
             for value in schedule:
                 ax.arrow(value,-0.2, 0, 0.2, head_width=0.5, head_length=0.3, fc='black', ec='black')
