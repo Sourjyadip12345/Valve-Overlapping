@@ -8,6 +8,8 @@ from htbuilder import HtmlElement, div, ul, li, br, hr, a, p, img, styles, class
 from htbuilder.units import percent, px
 from htbuilder.funcs import rgba, rgb
 from matplotlib.font_manager import FontProperties
+from plotly.tools import mpl_to_plotly
+import plotly.graph_objects as go
 
 
 st.set_page_config(page_title="Well Scheduling", page_icon=":alarm_clock:")
@@ -57,6 +59,9 @@ def analysis():
     
     st.sidebar.header("Data Analysis")
     num_data_points = st.sidebar.number_input("Number of wells", min_value=1, max_value=100, value=2)
+    iv=st.sidebar.checkbox("Interactive View")
+
+    
     
     data_table = pd.DataFrame(index=range(num_data_points), columns=['Well No', 'Gas Injection OFF time, min', 'Gas Injection ON time, min','Priority'])
     
@@ -85,6 +90,7 @@ def analysis():
             calculate_button = st.button('Calculate')
     try:
         if calculate_button:
+            #st.write(iv)
             #st.write(data_table.columns)
             data_table=pd.DataFrame(grid_table['data'])
             data_table["Well No"]=data_table["Well No"].astype(str)
@@ -112,6 +118,7 @@ def analysis():
                 gen_theshold=20
 
             schedule,sum_timings,overlap_number,priority_number=valve_overlapping(input_valves,population_size=population_size,gen_theshold=gen_theshold)
+            #st.write(overlap_number)
             sum_timings=list(itertools.chain.from_iterable(sum_timings))
             #print("Maximum Overlap Value Count:",overlap_number)
             #print("Priority Value:",priority_number)
@@ -121,7 +128,7 @@ def analysis():
             valve_numbers=sum_timings
 
             # Plot the orthogonal step function
-            fig,ax=plt.subplots(figsize=(12, 4))
+            fig,ax=plt.subplots()
 
             for i in range(len(time) - 1):
                 ax.plot([time[i], time[i + 1]], [valve_numbers[i], valve_numbers[i]], color='blue')
@@ -131,23 +138,15 @@ def analysis():
                 ax.fill(x, y, color='lightblue', alpha=0.5)
             #ax.plot(sum_timings[:240], linestyle='-', color='black')
             arrow_labels=data_table["Well No"].to_list()
-         
+
+
+
             font_properties = FontProperties(family='serif', size=15, weight='normal', style='italic')
-            first=1
-            first_overlap=0
-            for x_val, label in sorted(zip(schedule, arrow_labels)):
-                if x_val<=first_overlap:
-                    first_overlap=x_val+int(len(sum_timings)/50)
-                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val-10.0, -1.25*first), fontproperties=font_properties)
-                    first+=1
-                else:
-                    first=1
-                    first_overlap=x_val+int(len(sum_timings)/50)
-                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val-10.0, -1.25*first), fontproperties=font_properties)
-                    
+
+                
             for value in schedule:
-                ax.arrow(value,-0.2, 0, 0.2, head_width=0.5, head_length=0.3, fc='black', ec='black')
-      
+                ax.arrow(value,-0.2, 0, 0.2, head_width=2.5, head_length=0.1, fc='black', ec='black')
+            
             #st.write(max(sum_timings))
             #st.write("run")
             y_ticks = range(0, int(max(sum_timings))+3,1)
@@ -174,7 +173,11 @@ def analysis():
             st.write("---")
             st.write("## Indicative well overlapping diagram:")
             st.pyplot(fig)
-            #st.write(input_valves)
+            plotly_fig = mpl_to_plotly(fig)
+            if iv: 
+                st.write("---")
+                st.write("## Interactive View:")
+                st.plotly_chart(plotly_fig)
 
             def schedule_to_time(schedule):
                 timings=[]
@@ -201,7 +204,7 @@ def analysis():
             st.write("---")
             #st.write("---")
             st.write('## No. of gas injection wells VS Time utilization:')
-            fig1,ax1=plt.subplots(figsize=(8, 4))
+            fig1,ax1=plt.subplots(figsize=(10, 10))
             sum_timings_set=list(set(int(x) for x in sum_timings))
             sum_timings_frequency=[]
             for i in sum_timings_set:
@@ -218,14 +221,15 @@ def analysis():
             #st.write(x_ticks)
             ax1.set_xticks(x_ticks)
             ax1.legend()
-            ax1.grid(color='lightgray', linestyle='--')
             # Set labels for the axes and title
             ax1.set_xlabel('No. of gas injection wells')
             ax1.set_ylabel('Timing percentage of the day (%)')
             #ax1.set_title('Continuous Straight Line Plot')
 
             # Show the plot
-            st.pyplot(fig1)
+            left_col,centre_col,right_col=st.columns((0.2,1,0.3))
+            with centre_col:
+                st.pyplot(fig1)
             
 
             st.write("---")
@@ -357,7 +361,7 @@ def main():
     pages = {
         "Home": home,
         "Analysis": analysis,
-        "Feedback":contact
+        "Contact":contact
     }
 
     st.sidebar.title("Navigation")
