@@ -356,7 +356,7 @@ def main():
     pages = {
         "Home": home,
         "Analysis": analysis,
-        "Contact":contact
+        "Feedback":contact
     }
 
     st.sidebar.title("Navigation")
