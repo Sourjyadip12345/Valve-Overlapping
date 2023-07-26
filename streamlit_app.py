@@ -136,8 +136,8 @@ def analysis():
             first=1
             first_overlap=0
             for x_val, label in sorted(zip(schedule, arrow_labels)):
-                if x_val>=first_overlap:
-                    first_overlap=x_val+8
+                if x_val<=first_overlap:
+                    first_overlap=x_val+int(LCM/60)
                     ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.25*first), fontproperties=font_properties)
                     first+=1
                 else:
