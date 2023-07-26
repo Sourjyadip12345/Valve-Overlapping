@@ -121,7 +121,7 @@ def analysis():
             valve_numbers=sum_timings
 
             # Plot the orthogonal step function
-            fig,ax=plt.subplots(figsize=(120, 40))
+            fig,ax=plt.subplots(figsize=(12, 4))
 
             for i in range(len(time) - 1):
                 ax.plot([time[i], time[i + 1]], [valve_numbers[i], valve_numbers[i]], color='blue')
