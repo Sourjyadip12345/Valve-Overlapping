@@ -30,7 +30,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
             priority.append(k)
         total_time=[i+j for (i,j) in valves]
         LCM=math.lcm(*total_time)
-    '''
+ 
     #New Code start 
     def manual_optimization(input_valves=input_valves,total_time=total_time,LCM=LCM):
         possible=True
@@ -81,7 +81,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
     A,B,C,D,E=manual_optimization()
     if A==True:
         return B,C,D,E
-'''
+
     #New code end
     #Create chromosome
     def create_chromosome(valves):
