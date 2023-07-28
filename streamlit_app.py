@@ -142,24 +142,7 @@ def analysis():
 
 
             font_properties = FontProperties(family='serif', size=15, weight='normal', style='italic')
-            '''
-            sl_no=[i+1 for i in range(len(arrow_labels))]
-            first=1
-            first_overlap=0
-            for x_val,label,_ in sorted(zip(schedule, arrow_labels,sl_no)):
-                    
-                if x_val<=first_overlap:
-                    first_overlap=x_val+len(arrow_labels)*int(len(sum_timings)/50)
-                    ax.annotate(str(label), xy=(x_val, 0), xytext=(x_val, -1.1*first), fontproperties=font_properties)
-                    first+=1
-                    if first>=3:
-                        first=1
-
-                else:
-                    first=1
-                    first_overlap=x_val+len(arrow_labels)*int(len(sum_timings)/50)
-                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.1*first), fontproperties=font_properties)
-            '''
+           
 
                 
             for value in schedule:
