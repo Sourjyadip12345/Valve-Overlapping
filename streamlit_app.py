@@ -519,7 +519,7 @@ def cluster_wise_analysis():
                 
             st.write("---")
             st.write("# All clusters well overlapping:")
-            st.write("- Arrow marks cluster-wise start of cycle ")
+            st.write("- Arrow marks cluster-wise start of cycle for one LCM cycle")
             st.pyplot(fig)
             plotly_fig = mpl_to_plotly(fig)
             if iv: 
