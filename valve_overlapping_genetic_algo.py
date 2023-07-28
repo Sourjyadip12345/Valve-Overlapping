@@ -11,14 +11,26 @@ import pandas as pd
 #input_valves=[(55,5,0),(45,15,0),(55,5,0),(230,10,0),(55,5,0),(55,5,0),(50,10,0),(45,15,0),(50,10,0)]
 #input_valves=[(15,45,1),(45,15,1),(40,30,1),(80,20,1),(130,10,1),(20,30,1),(30,10,1),(30,20,1),(35,25,5),(40,10,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1)]
 
-def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
+def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycles=None ):
+    
     valves=[]
     priority=[]
-    for i,j,k in input_valves:
-        valves.append((i,j))
-        priority.append(k)
-    total_time=[i+j for (i,j) in valves]
-    LCM=math.lcm(*total_time)
+    if cycles!=None: 
+        input_valves= [( sum(1 for val in cycle if val == 0),sum(1 for val in cycle if val != 0), 0) for cycle in cycles]
+        for i,j,k in input_valves:
+            valves.append((i,j))
+            priority.append(k)
+        total_time=[i+j for (i,j) in valves]
+        LCM=math.lcm(*total_time)
+
+
+    if cycles==None:
+        for i,j,k in input_valves:
+            valves.append((i,j))
+            priority.append(k)
+        total_time=[i+j for (i,j) in valves]
+        LCM=math.lcm(*total_time)
+    '''
     #New Code start 
     def manual_optimization(input_valves=input_valves,total_time=total_time,LCM=LCM):
         possible=True
@@ -36,7 +48,7 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
         for i,j,k in input_valves:
             open_time.append(j)
             close_time.append(i)
-          
+        
         total_injection_time=0
         for i,j in zip(total_time,open_time):
             total_injection_time+=(LCM//i)*j
@@ -63,13 +75,13 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
             sum_timings_m=df.sum(axis=0).to_list()
             if max(sum_timings_m)>=2:
                 possible=False
-        
+
         return possible,schedule_m,[sum_timings_m],0,0
-    
+        
     A,B,C,D,E=manual_optimization()
     if A==True:
         return B,C,D,E
-
+'''
     #New code end
     #Create chromosome
     def create_chromosome(valves):
@@ -82,9 +94,16 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
             gene=gene[shift:]+gene[:shift]
         
             chromosome.append(gene)
-
+        if cycles!=None:
+            chromosome=[]
+            for gene in cycles:
+                shift=random.randint(0,len(cycles[0]))
+                gene=gene[shift:]+gene[:shift]
+                chromosome.append(gene)
         return chromosome
-
+        
+    #chromosome=create_chromosome(valves)
+    
 
     #Generate population
     def generate_population(population_size):
@@ -144,6 +163,7 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
         fitness_list2=list(itertools.chain(*scaler.fit_transform(fitness_list2).tolist()))
 
         fitness_list=[x+100*y for x, y in zip(fitness_list1,fitness_list2)]
+        
 
         sorted_list_pair=sorted(zip(fitness_list,population))
         sorted_fitness,sorted_population=zip(*sorted_list_pair)
@@ -216,7 +236,7 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
                     count0 += 1
                     if count0==valves[i][0]:
                         break
-                elif num==1:
+                elif num!=0:
                     if count0!=0:
                         break
                     count1+=1
@@ -225,6 +245,7 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
             
                 
             schedule.append(count0+count1)
+        if cycles!=None: return schedule 
         schedule=[x-min(schedule) for x in schedule]
         return schedule
 
@@ -234,12 +255,21 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
     #print("LCM is:",LCM)
     schedule=scheduling(best_chromosome)
     
+
     def scheduled_valves(schedule,input_valves):
         sum_timings=[]
         for i in range(len(input_valves)):
             sum_timings.append((schedule[i]*[0]+input_valves[i][1]*[1]+(input_valves[i][0]-schedule[i])*[0])*int(LCM/(input_valves[i][0]+input_valves[i][1])))
         df=pd.DataFrame(sum_timings)
         sum_timings=df.sum(axis=0).to_list()
+
+        if cycles!=None:
+            sum_timings=best_chromosome
+            #for i in range(len(input_valves)):
+            ##    s=schedule[i]
+            #   sum_timings.append(best_chromosome[i][s:]+best_chromosome[i][:s])
+            #df=pd.DataFrame(sum_timings)
+            #sum_timings=df.sum(axis=0).to_list()
 
 
         '''
@@ -259,8 +289,11 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
         '''
         return sum_timings
 
+
     scheduled_sum_timings=scheduled_valves(schedule,input_valves)
 
+    
+    
     '''
     def scheduled_valves(best_chromosome,schedule):
         scheduled_timings=[]
@@ -280,46 +313,26 @@ def valve_overlapping(input_valves,population_size=200,gen_theshold=20):
     return schedule,[scheduled_sum_timings],overlap_number,priority_number
 
 
-input_valves=[(55,5,1),(40,5,1)]
-valve_overlapping(input_valves=input_valves)
+input_valves=[(5,1,1),(5,1,1)]
+
+cycles=[(1,0,0,0,0,0),(1,0,0,0,0,0)]
+#print(valve_overlapping(input_valves=input_valves))
+print(valve_overlapping(cycles=cycles))
 '''
-normal_calculation=True
+                sl_no=[i+1 for i in range(len(arrow_labels))]
+                first=1
+                first_overlap=0
+                for x_val,label,_ in sorted(zip(schedule, arrow_labels,sl_no)):
+                        
+                    if x_val<=first_overlap:
+                        first_overlap=x_val+len(arrow_labels)*int(len(sum_timings)/50)
+                        ax.annotate(str(label), xy=(x_val, 0), xytext=(x_val, -1.1*first), fontproperties=font_properties)
+                        first+=1
+                        if first>=3:
+                            first=1
 
-if normal_calculation==False:
-    population_size=500
-    gen_theshold=100
-else:
-    population_size=200
-    gen_theshold=20
-
-schedule,sum_timings,overlap_number,priority_number=valve_overlapping(input_valves,population_size=population_size,gen_theshold=gen_theshold)
-
-print("Maximum Overlap Value Count:",overlap_number)
-print("Priority Value:",priority_number)
-print("Valve schedule",schedule)
-
-time=np.arange(0, min(len(sum_timings),241))
-valve_numbers=sum_timings[:241]
-
-# Plot the orthogonal step function
-fig,ax=plt.subplots(figsize=(12, 4))
-
-for i in range(len(time) - 1):
-    ax.plot([time[i], time[i + 1]], [valve_numbers[i], valve_numbers[i]], color='blue')
-    ax.plot([time[i + 1], time[i + 1]], [valve_numbers[i], valve_numbers[i + 1]], color='blue')
-    x = [time[i], time[i + 1], time[i + 1], time[i]]
-    y = [valve_numbers[i], valve_numbers[i], 0, 0]
-    ax.fill(x, y, color='lightblue', alpha=0.5)
-#ax.plot(sum_timings[:240], linestyle='-', color='black')
-
-
-y_ticks = range(0, max(sum_timings)+3,1)
-x_ticks = range(0, min(len(sum_timings),241)+20,10)
-plt.yticks(y_ticks)
-plt.xticks(x_ticks)
-ax.set_title('Indicative valve overlapping')
-ax.set_xlabel('Time in minute')
-ax.set_ylabel('Valve overlap count')
-ax.grid(color='lightgray', linestyle='--')
-plt.show()
-'''
+                    else:
+                        first=1
+                        first_overlap=x_val+len(arrow_labels)*int(len(sum_timings)/50)
+                        ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.1*first), fontproperties=font_properties)
+                '''
