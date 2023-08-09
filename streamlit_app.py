@@ -142,7 +142,24 @@ def analysis():
 
 
             font_properties = FontProperties(family='serif', size=15, weight='normal', style='italic')
-           
+            '''
+            sl_no=[i+1 for i in range(len(arrow_labels))]
+            first=1
+            first_overlap=0
+            for x_val,label,_ in sorted(zip(schedule, arrow_labels,sl_no)):
+                    
+                if x_val<=first_overlap:
+                    first_overlap=x_val+len(arrow_labels)*int(len(sum_timings)/50)
+                    ax.annotate(str(label), xy=(x_val, 0), xytext=(x_val, -1.1*first), fontproperties=font_properties)
+                    first+=1
+                    if first>=3:
+                        first=1
+
+                else:
+                    first=1
+                    first_overlap=x_val+len(arrow_labels)*int(len(sum_timings)/50)
+                    ax.annotate(label, xy=(x_val, 0), xytext=(x_val, -1.1*first), fontproperties=font_properties)
+            '''
 
                 
             for value in schedule:
@@ -306,6 +323,9 @@ def cluster_wise_analysis():
             grouped_data_table=data_table.groupby('Priority')
 
             cycles=[]
+            cluster_sum_timings=[]
+            cluster_schedule=[]
+            cluster_priority=[]
             for cluster_name, cluster_data in grouped_data_table:
                 
                 cluster_data_without_cluster = cluster_data.drop(columns=['Priority'])
@@ -332,10 +352,64 @@ def cluster_wise_analysis():
                     gen_theshold=20
 
                 schedule,sum_timings,overlap_number,priority_number=valve_overlapping(input_valves,population_size=population_size,gen_theshold=gen_theshold)
+                
                 #st.write(overlap_number)
                 sum_timings=list(itertools.chain.from_iterable(sum_timings))
 
+                cluster_schedule.append(schedule)
+                cluster_sum_timings.append(sum_timings)
+                cluster_priority.append(priority_number)
+
                 cycles.append(tuple(sum_timings))
+                
+            
+            len_cycles=[len(i) for i in cycles]
+            LCM_cycles=math.lcm(*len_cycles)
+            final_cycles=[cycle*int(LCM_cycles/len(cycle)) for cycle in cycles]
+
+            overall_schedule,overall_sum_timings,overlap_number,priority_number=valve_overlapping(cycles=final_cycles)
+            
+
+            shift_factor=[x-min(overall_schedule) for x in overall_schedule]
+
+            #######For plotting with modifications 
+            loop_count=-1
+            for cluster_name, cluster_data in grouped_data_table:
+                loop_count+=1
+                cluster_data_without_cluster = cluster_data.drop(columns=['Priority'])
+                data_table=cluster_data_without_cluster
+
+
+
+                data_tuples = data_table.values.T.tolist()
+            
+
+                input_valves=[]
+
+                for i,j,k in zip(data_tuples[1],data_tuples[2],[0]*len(data_tuples[2])):
+                    input_valves.append((i,j,k))
+                
+                #input_valves=[(55,5,1),(45,15,1),(55,5,0),(230,10,1),(55,5,0),(55,5,0),(50,10,0),(45,15,0),(50,10,0)]
+                normal_calculation=True
+
+                if normal_calculation==False:
+                    population_size=500
+                    gen_theshold=100
+                else:
+                    population_size=200
+                    gen_theshold=20
+
+                schedule,sum_timings,priority_number=cluster_schedule[loop_count],cluster_sum_timings[loop_count],cluster_priority[loop_count]
+                #st.write(overlap_number)
+                #st.write(sum_timings)
+                #sum_timings=list(itertools.chain.from_iterable(sum_timings))
+                #schedule=schedule[-shift_factor[loop_count]:]+schedule[:-shift_factor[loop_count]]
+                schedule=[x+shift_factor[loop_count] for x in schedule]
+                schedule=[x if x<=len(sum_timings) else x-len(sum_timings) for x in schedule]
+
+                #schedule=schedule_final
+                sum_timings=sum_timings[-shift_factor[loop_count]:]+sum_timings[:-shift_factor[loop_count]]
+                #cycles.append(tuple(sum_timings))
                 #print("Maximum Overlap Value Count:",overlap_number)
                 #print("Priority Value:",priority_number)
                 #print("Valve schedule",schedule)
@@ -429,6 +503,14 @@ def cluster_wise_analysis():
                 # Plot the data on the new axis
                 ax1.plot(sum_timings_set, sum_timings_frequency)
 
+                #annotations = [f'({xi}, {yi})' for xi, yi in zip(sum_timings_set, sum_timings_frequency)]
+                #for annotation, xy in zip(annotations, zip(x, y)):
+                #    ax1.annotate(annotation, xy)
+                #    
+                #    # Connect dotted orthogonal lines to the x and y axes
+                #    ax.plot([xy[0], xy[1]], [xy[1], 0], linestyle='dotted', color='gray')
+                #    ax.plot([xy[0], 0], [xy[0], xy[1]], linestyle='dotted', color='gray')
+
                 # Plot the mean value as a dotted vertical line
                 ax1.axvline(x=mean, linestyle='dotted', color='red', label='Mean is '+str(round(mean,2)))
                 x_ticks=sum_timings_set
@@ -458,16 +540,23 @@ def cluster_wise_analysis():
                     with table:
                         st.write(data_table)
             
-            len_cycles=[len(i) for i in cycles]
-            LCM_cycles=math.lcm(*len_cycles)
-            final_cycles=[cycle*int(LCM_cycles/len(cycle)) for cycle in cycles]
-
-            schedule,sum_timings,overlap_number,priority_number=valve_overlapping(cycles=final_cycles)
+            
+            
+            
+            
                 #st.write(overlap_number)
-            sum_timings=list(itertools.chain.from_iterable(sum_timings))
+            
+            schedule=overall_schedule
+            sum_timings=list(itertools.chain.from_iterable(overall_sum_timings))
+            #st.write(sum_timings)
             sum_timings=list(map(sum, zip(*sum_timings)))
             #st.write(sum_timings)
-            
+            #st.write((shift_factor))
+            cluster_shift=min(overall_schedule)
+            schedule=[x-cluster_shift for x in schedule]
+            #schedule=[x if x<=len(sum_timings) else x-len(sum_timings) for x in schedule]
+
+            sum_timings=sum_timings[cluster_shift:]+sum_timings[:cluster_shift]
             time=np.arange(0, len(sum_timings))
             valve_numbers=sum_timings
 
@@ -515,10 +604,10 @@ def cluster_wise_analysis():
             overlap_value=int(max(sum_timings)) if max(sum_timings)>1 else "No Overlapping!"
             st.write("- Maximum well overlap: "+str(overlap_value))
             #st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
-            #if priority_number==0:
-                #st.write("- For cluster wells overlapping with other wells has been avoided successfully")
-            #else:
-                #st.write("- Well overlapping is present for cluster wells, however, minimum overlapping scheduling is done.")
+            if priority_number==0:
+                st.write("- For cluster wells overlapping with other wells has been avoided successfully")
+            else:
+                st.write("- Well overlapping is present for cluster wells, however, minimum overlapping scheduling is done.")
             st.write("---")
             ###########HERE 
     except ValueError: 
@@ -631,7 +720,7 @@ def main():
         "Home": home,
         "Analysis": analysis,
         "Analysis (Cluster Wise)": cluster_wise_analysis,
-        "Contact":contact
+        "Feedback":contact
     }
 
     st.sidebar.title("Navigation")
