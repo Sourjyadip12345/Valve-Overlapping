@@ -30,7 +30,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
             priority.append(k)
         total_time=[i+j for (i,j) in valves]
         LCM=math.lcm(*total_time)
- 
+  
     #New Code start 
     def manual_optimization(input_valves=input_valves,total_time=total_time,LCM=LCM):
         possible=True
@@ -67,8 +67,8 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
             for i in range(len(input_valves)):
                 #print(input_valves[i][0]+input_valves[i][1])
                 to_append=((input_valves[i][1]*[1]+(input_valves[i][0])*[0])*int(LCM/(input_valves[i][0]+input_valves[i][1])))
-                to_append=to_append[-current_time:]+to_append[:-current_time]
-                sum_timings_m.append(to_append)
+                to_append_shuffle=to_append[-current_time:]+to_append[:-current_time]
+                sum_timings_m.append(to_append_shuffle)
                 schedule_m.append(current_time)
                 current_time+=input_valves[i][1]
             df=pd.DataFrame(sum_timings_m)
@@ -165,7 +165,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
         fitness_list=[x+100*y for x, y in zip(fitness_list1,fitness_list2)]
         
 
-        sorted_list_pair=sorted(zip(fitness_list,population))
+        sorted_list_pair=sorted(zip(fitness_list,population))   #zip(fitness_list,population)
         sorted_fitness,sorted_population=zip(*sorted_list_pair)
 
         return sorted_population
@@ -313,8 +313,8 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
     return schedule,[scheduled_sum_timings],overlap_number,priority_number
 
 
-input_valves=[(5,1,1),(5,1,1)]
+input_valves=[(50,10,1),(50,10,1),(50,10,1),(50,10,1),(50,10,1)]
 
 cycles=[(1,0,0,0,0,0),(1,0,0,0,0,0)]
 #print(valve_overlapping(input_valves=input_valves))
-
+print(valve_overlapping(cycles=cycles))
