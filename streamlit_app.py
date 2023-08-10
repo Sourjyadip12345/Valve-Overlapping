@@ -638,9 +638,9 @@ def cluster_wise_analysis():
             overlap_value=int(max(sum_timings)) if max(sum_timings)>1 else "No Overlapping!"
             st.write("- Maximum well overlap: "+str(overlap_value))
             #st.write("- Maximum valve overlap count (in minutes) in a cycle: "+str(overlap_number))
-            if priority_number==0:
+            #if priority_number==0:
                 #st.write("- For cluster wells overlapping with other wells has been avoided successfully")
-            else:
+            #else:
                 #st.write("- Well overlapping is present for cluster wells, however, minimum overlapping scheduling is done.")
             st.write("---")
             ###########HERE 
