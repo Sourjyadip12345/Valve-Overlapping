@@ -347,11 +347,11 @@ def valve_overlapping(input_valves=None,population_size=100,gen_theshold=20,cycl
     '''
     
 
-    return schedule,[scheduled_sum_timings],overlap_number,priority_number
+    return schedule,[scheduled_sum_timings],"manual",priority_number
 
 
-input_valves=[(15,5,1),(15,5,1),(25,5,1),(55,5,1),(55,5,1),(55,5,1)]
+input_valves=[(55,5,1),(5,55,1)]  #,(25,5,1),(55,5,1),(55,5,1),(55,5,1)
 
 cycles=[(1,0,0,0,0,0),(1,0,0,0,0,0)]
-print(valve_overlapping(input_valves=input_valves))
+#print(valve_overlapping(input_valves=input_valves))
 #print(valve_overlapping(cycles=cycles))
