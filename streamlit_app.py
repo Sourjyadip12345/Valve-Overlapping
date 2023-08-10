@@ -349,11 +349,12 @@ def cluster_wise_analysis():
             LCM_cycles=math.lcm(*len_cycles)
             final_cycles=[cycle*int(LCM_cycles/len(cycle)) for cycle in cycles]
 
-            overall_schedule,overall_sum_timings,overlap_number,priority_number=valve_overlapping(cycles=final_cycles)
+            overall_schedule,overall_sum_timings,overlap_type,priority_number=valve_overlapping(cycles=final_cycles)
             
 
             shift_factor=[x-min(overall_schedule) for x in overall_schedule]
-
+            
+            #st.write(shift_factor)
             #######For plotting with modifications 
             loop_count=-1
             for cluster_name, cluster_data in grouped_data_table:
@@ -386,11 +387,15 @@ def cluster_wise_analysis():
                 #st.write(sum_timings)
                 #sum_timings=list(itertools.chain.from_iterable(sum_timings))
                 #schedule=schedule[-shift_factor[loop_count]:]+schedule[:-shift_factor[loop_count]]
+                ########WORKING HERE
+                
+                #st.write(schedule)
+                #st.write(sum_timings)
                 schedule=[x+shift_factor[loop_count] for x in schedule]
                 schedule=[x if x<=len(sum_timings) else x%len(sum_timings) for x in schedule]
 
                 #schedule=schedule_final
-                sum_timings=sum_timings[-shift_factor[loop_count]:]+sum_timings[:-shift_factor[loop_count]]
+                sum_timings=sum_timings[-shift_factor[loop_count]%len(sum_timings):]+sum_timings[:-shift_factor[loop_count]%len(sum_timings)]
                 #cycles.append(tuple(sum_timings))
                 #print("Maximum Overlap Value Count:",overlap_number)
                 #print("Priority Value:",priority_number)
@@ -529,9 +534,14 @@ def cluster_wise_analysis():
                 #st.write(overlap_number)
             
             schedule=overall_schedule
+            #st.write(overall_sum_timings)
+            #st.write(len(overall_sum_timings))
+            #st.write(len(*overall_sum_timings))
             sum_timings=list(itertools.chain.from_iterable(overall_sum_timings))
-            #st.write(sum_timings)
-            if len(sum_timings)>1: sum_timings=list(map(sum, zip(*sum_timings)))
+            #st.write(max(sum_timings))
+            #st.write(overlap_type)
+            if overlap_type!="manual": 
+                sum_timings=list(map(sum, zip(*sum_timings)))
             #st.write(sum_timings)
             #st.write((shift_factor))
             cluster_shift=min(overall_schedule)
