@@ -350,8 +350,8 @@ def cluster_wise_analysis():
             final_cycles=[cycle*int(LCM_cycles/len(cycle)) for cycle in cycles]
 
             overall_schedule,overall_sum_timings,overlap_type,priority_number=valve_overlapping(cycles=final_cycles)
-            
-
+            #st.write("# Original overlap type")
+            #st.write(overlap_type)
             shift_factor=[x-min(overall_schedule) for x in overall_schedule]
             
             #st.write(shift_factor)
@@ -554,13 +554,14 @@ def cluster_wise_analysis():
             #sum_timings=list(itertools.chain.from_iterable(overall_sum_timings))
             sum_timings=[sum(x) for x in zip(*overall_cluster_sum_timings_lcm)]
             #st.write(max(sum_timings))
+            #st.write("# Overlap Type")
             #st.write(overlap_type)
             if overlap_type!="manual": 
                 sum_timings=list(map(sum, zip(*sum_timings)))
             #st.write(sum_timings)
             #st.write((shift_factor))
             cluster_shift=min(overall_schedule)
-            schedule=[x-cluster_shift for x in schedule]
+            #schedule=[x-cluster_shift for x in schedule]
             #schedule=[x if x<=len(sum_timings) else x-len(sum_timings) for x in schedule]
 
             sum_timings=sum_timings[cluster_shift:]+sum_timings[:cluster_shift]
