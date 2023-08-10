@@ -56,9 +56,9 @@ def valve_overlapping(input_valves=None,population_size=100,gen_theshold=20,cycl
         if total_injection_time>LCM:
             possible=False
         #print(possible) 
-        for i in open_time:
-            if i>min(close_time):
-                possible=False
+        #for i in open_time:
+        #    if i>min(close_time):
+        #        possible=False
         #print(possible) 
         all_permutations = list(itertools.permutations(input_valves))
         if possible==True:
