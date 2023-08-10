@@ -592,6 +592,48 @@ def cluster_wise_analysis():
                 st.plotly_chart(plotly_fig)
             
             st.write("---")
+            #st.write("---")
+            st.write("# Time utilization for all clusters: ")
+            fig1,ax1=plt.subplots(figsize=(10, 10))
+            sum_timings_set=list(set(int(x) for x in sum_timings))
+            sum_timings_frequency=[]
+            for i in sum_timings_set:
+                sum_timings_frequency.append(math.ceil(sum_timings.count(i)/len(sum_timings)*100*100)/100)
+            
+            mean=sum(sum_timings)/len(sum_timings)
+            
+            # Plot the data on the new axis
+            ax1.plot(sum_timings_set, sum_timings_frequency)
+
+            #annotations = [f'({xi}, {yi})' for xi, yi in zip(sum_timings_set, sum_timings_frequency)]
+            #for annotation, xy in zip(annotations, zip(x, y)):
+            #    ax1.annotate(annotation, xy)
+            #    
+            #    # Connect dotted orthogonal lines to the x and y axes
+            #    ax.plot([xy[0], xy[1]], [xy[1], 0], linestyle='dotted', color='gray')
+            #    ax.plot([xy[0], 0], [xy[0], xy[1]], linestyle='dotted', color='gray')
+
+            # Plot the mean value as a dotted vertical line
+            ax1.axvline(x=mean, linestyle='dotted', color='red', label='Mean is '+str(round(mean,2)))
+            x_ticks=sum_timings_set
+            #st.write(x_ticks)
+            ax1.set_xticks(x_ticks)
+            ax1.legend()
+            ax1.grid(color='lightgray', linestyle='--')
+            # Set labels for the axes and title
+            ax1.set_xlabel('No. of gas injection wells')
+            ax1.set_ylabel('Timing percentage of the day (%)')
+            #ax1.set_title('Continuous Straight Line Plot')
+            #print(data_table)
+                # Show the plot
+            left_col,centre_col,right_col=st.columns((0.2,1,0.3))
+            with centre_col:
+                st.pyplot(fig1)
+        
+            
+                
+
+            st.write("---")
             st.write('## Results:')
             overlap_value=int(max(sum_timings)) if max(sum_timings)>1 else "No Overlapping!"
             st.write("- Maximum well overlap: "+str(overlap_value))
