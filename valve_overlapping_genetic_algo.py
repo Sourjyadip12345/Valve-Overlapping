@@ -76,7 +76,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
             if max(sum_timings_m)>=2:
                 possible=False
 
-        return possible,schedule_m,[sum_timings_m],0,0
+        return possible,schedule_m,[sum_timings_m],"manual",0
         
     A,B,C,D,E=manual_optimization()
     if A==True:
