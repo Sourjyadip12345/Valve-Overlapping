@@ -356,6 +356,8 @@ def cluster_wise_analysis():
             
             #st.write(shift_factor)
             #######For plotting with modifications 
+            overall_cluster_schedule=[]
+            overall_cluster_sum_timings=[]
             loop_count=-1
             for cluster_name, cluster_data in grouped_data_table:
                 loop_count+=1
@@ -396,6 +398,11 @@ def cluster_wise_analysis():
 
                 #schedule=schedule_final
                 sum_timings=sum_timings[-shift_factor[loop_count]%len(sum_timings):]+sum_timings[:-shift_factor[loop_count]%len(sum_timings)]
+                
+                overall_cluster_schedule.append(schedule)
+                overall_cluster_sum_timings.append(sum_timings)
+                
+                
                 #cycles.append(tuple(sum_timings))
                 #print("Maximum Overlap Value Count:",overlap_number)
                 #print("Priority Value:",priority_number)
@@ -532,12 +539,20 @@ def cluster_wise_analysis():
             
             
                 #st.write(overlap_number)
-            
-            schedule=overall_schedule
+            #########WORKING HERE with overall_cluster variables, make them even using LCM 
+            schedule=[i[0] for i in overall_cluster_schedule]
             #st.write(overall_sum_timings)
             #st.write(len(overall_sum_timings))
             #st.write(len(*overall_sum_timings))
-            sum_timings=list(itertools.chain.from_iterable(overall_sum_timings))
+            length_sums=[len(i) for i in overall_cluster_sum_timings]
+            
+            LCM2=math.lcm(*length_sums)
+
+            #st.write(LCM2)
+            overall_cluster_sum_timings_lcm=[i*int(LCM2/len(i)) for i in overall_cluster_sum_timings]
+            
+            #sum_timings=list(itertools.chain.from_iterable(overall_sum_timings))
+            sum_timings=[sum(x) for x in zip(*overall_cluster_sum_timings_lcm)]
             #st.write(max(sum_timings))
             #st.write(overlap_type)
             if overlap_type!="manual": 
