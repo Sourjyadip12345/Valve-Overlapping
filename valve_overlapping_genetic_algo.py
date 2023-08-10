@@ -11,7 +11,7 @@ import pandas as pd
 #input_valves=[(55,5,0),(45,15,0),(55,5,0),(230,10,0),(55,5,0),(55,5,0),(50,10,0),(45,15,0),(50,10,0)]
 #input_valves=[(15,45,1),(45,15,1),(40,30,1),(80,20,1),(130,10,1),(20,30,1),(30,10,1),(30,20,1),(35,25,5),(40,10,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1)]
 
-def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycles=None ):
+def valve_overlapping(input_valves=None,population_size=100,gen_theshold=20,cycles=None ):
     
     valves=[]
     priority=[]
@@ -60,21 +60,58 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
             if i>min(close_time):
                 possible=False
         #print(possible) 
+        all_permutations = list(itertools.permutations(input_valves))
         if possible==True:
-            current_time=0
-            schedule_m=[]
-            sum_timings_m=[]
-            for i in range(len(input_valves)):
-                #print(input_valves[i][0]+input_valves[i][1])
-                to_append=((input_valves[i][1]*[1]+(input_valves[i][0])*[0])*int(LCM/(input_valves[i][0]+input_valves[i][1])))
-                to_append_shuffle=to_append[-current_time:]+to_append[:-current_time]
-                sum_timings_m.append(to_append_shuffle)
-                schedule_m.append(current_time)
-                current_time+=input_valves[i][1]
-            df=pd.DataFrame(sum_timings_m)
-            sum_timings_m=df.sum(axis=0).to_list()
-            if max(sum_timings_m)>=2:
+            for perm in all_permutations:
+                
+                current_time=0
+                schedule_m=[]
+                sum_timings_m_pre=[]
+                sum_timings_m=[0]
+                def check_overlap(list1, list2):
+                    for val1, val2 in zip(list1, list2):
+                        if val1 == 1 and val2 == 1:
+                            return True
+                    return False
+                for i in range(len(perm)):
+                    
+                    while sum_timings_m[current_time]!=0:
+                        current_time+=1
+                    
+                    #print(input_valves[i][0]+input_valves[i][1])
+                    to_append=((perm[i][1]*[1]+(perm[i][0])*[0])*int(LCM/(perm[i][0]+perm[i][1])))
+                    to_append_shuffle=to_append[-current_time:]+to_append[:-current_time]
+
+                    while check_overlap(to_append_shuffle,sum_timings_m) and current_time<=len(sum_timings_m):
+                        current_time+=1
+                        to_append_shuffle=to_append[-current_time:]+to_append[:-current_time]
+
+
+                    sum_timings_m_pre.append(to_append_shuffle)
+                    if sum_timings_m==[0]:
+                        sum_timings_m=[]
+                    schedule_m.append(current_time)
+                    current_time=0#current_time+=input_valves[i][1]
+                    
+                    df=pd.DataFrame(sum_timings_m_pre)
+                    sum_timings_m=df.sum(axis=0).to_list()
                 possible=False
+                if max(sum_timings_m)==1:
+                    possible=True
+                #print(possible)
+                if possible==True:
+                    #schedule_indices = [ [index,value] for index, value in zip( schedule_m,perm)]
+                    sorted_schedule_m=[]
+                    perm=list(perm)
+                    for i in input_valves:
+                        ii=perm.index(i)
+                        sorted_schedule_m.append(schedule_m[ii])
+                        perm[ii]=-math.inf
+                    schedule_m=sorted_schedule_m
+                    sum_indices = { index:value for index, value in zip(perm, sum_timings_m)}
+                    #sum_timings_m = [sum_indices[x] for x in input_valves]
+
+                    break
 
         return possible,schedule_m,[sum_timings_m],"manual",0
         
@@ -89,7 +126,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
         for j in range(len(valves)):
             index=random.randint(0,1)
             
-            shift=random.randint(0,total_time[j])
+            shift=random.randint(0,total_time[j])#//(min(valves[j][1],valves[j][0])))*min(valves[j][1],valves[j][0])
             gene=([0]*valves[j][0]+[1]*valves[j][1])*int(LCM/total_time[j])
             gene=gene[shift:]+gene[:shift]
         
@@ -207,15 +244,15 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
 
             population=population_fitness(population)
 
-            #Elitism 20%
-            s=int((20*population_size)/100)
+            #Elitism 25%
+            s=int((25*population_size)/100)
             new_population.extend(population[:s])
 
-            #Mating from 60% of fittest population forming rest of 80% population
-            s = int((80*population_size)/100)
+            #Mating from 50% of fittest population forming rest of 80% population
+            s = int((75*population_size)/100)
             for _ in range(s):
-                parent1 = random.choice(population[:60])
-                parent2 = random.choice(population[:60])
+                parent1 = random.choice(population[:50])
+                parent2 = random.choice(population[:50])
                 child = mate(parent1,parent2)
                 new_population.append(child)
 
@@ -313,8 +350,8 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=20,cycl
     return schedule,[scheduled_sum_timings],overlap_number,priority_number
 
 
-input_valves=[(50,10,1),(50,10,1),(50,10,1),(50,10,1),(50,10,1)]
+input_valves=[(15,5,1),(15,5,1),(25,5,1),(55,5,1),(55,5,1),(55,5,1)]
 
 cycles=[(1,0,0,0,0,0),(1,0,0,0,0,0)]
-#print(valve_overlapping(input_valves=input_valves))
-print(valve_overlapping(cycles=cycles))
+print(valve_overlapping(input_valves=input_valves))
+#print(valve_overlapping(cycles=cycles))
