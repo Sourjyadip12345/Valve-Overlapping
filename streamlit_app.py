@@ -387,7 +387,7 @@ def cluster_wise_analysis():
                 #sum_timings=list(itertools.chain.from_iterable(sum_timings))
                 #schedule=schedule[-shift_factor[loop_count]:]+schedule[:-shift_factor[loop_count]]
                 schedule=[x+shift_factor[loop_count] for x in schedule]
-                schedule=[x if x<=len(sum_timings) else x-len(sum_timings) for x in schedule]
+                schedule=[x if x<=len(sum_timings) else x%len(sum_timings) for x in schedule]
 
                 #schedule=schedule_final
                 sum_timings=sum_timings[-shift_factor[loop_count]:]+sum_timings[:-shift_factor[loop_count]]
@@ -530,7 +530,7 @@ def cluster_wise_analysis():
             
             schedule=overall_schedule
             sum_timings=list(itertools.chain.from_iterable(overall_sum_timings))
-            st.write(sum_timings)
+            #st.write(sum_timings)
             if len(sum_timings)>1: sum_timings=list(map(sum, zip(*sum_timings)))
             #st.write(sum_timings)
             #st.write((shift_factor))
