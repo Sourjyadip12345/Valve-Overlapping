@@ -11,7 +11,7 @@ import pandas as pd
 #input_valves=[(55,5,0),(45,15,0),(55,5,0),(230,10,0),(55,5,0),(55,5,0),(50,10,0),(45,15,0),(50,10,0)]
 #input_valves=[(15,45,1),(45,15,1),(40,30,1),(80,20,1),(130,10,1),(20,30,1),(30,10,1),(30,20,1),(35,25,5),(40,10,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1),(30,30,1)]
 
-def valve_overlapping(input_valves=None,population_size=100,gen_theshold=20,cycles=None ):
+def valve_overlapping(input_valves=None,population_size=200,gen_theshold=40,cycles=None ):
     
     valves=[]
     priority=[]
@@ -60,7 +60,13 @@ def valve_overlapping(input_valves=None,population_size=100,gen_theshold=20,cycl
         #    if i>min(close_time):
         #        possible=False
         #print(possible) 
-        all_permutations = list(itertools.permutations(input_valves))
+        
+        if len(input_valves)>6:
+
+            all_permutations=[input_valves]
+        else:
+            all_permutations = list(itertools.permutations(input_valves))
+
         if possible==True:
             for perm in all_permutations:
                 
@@ -350,8 +356,8 @@ def valve_overlapping(input_valves=None,population_size=100,gen_theshold=20,cycl
     return schedule,[scheduled_sum_timings],"manual",priority_number
 
 
-input_valves=[(55,5,1),(5,55,1)]  #,(25,5,1),(55,5,1),(55,5,1),(55,5,1)
+#input_valves=[(55,5,1),(5,55,1)]  #,(25,5,1),(55,5,1),(55,5,1),(55,5,1)
 
-cycles=[(1,0,0,0,0,0),(1,0,0,0,0,0)]
+#cycles=[(1,0,0,0,0,0),(1,0,0,0,0,0)]
 #print(valve_overlapping(input_valves=input_valves))
 #print(valve_overlapping(cycles=cycles))
