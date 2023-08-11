@@ -61,7 +61,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=40,cycl
         #        possible=False
         #print(possible) 
         
-        if len(input_valves)>6:
+        if len(set(input_valves))>6:
 
             all_permutations=[input_valves]
         else:
