@@ -284,6 +284,7 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=40,cycl
                         break
                     count1+=1
                     if count1==valves[i][1]:
+                        count1=0
                         break
             
                 
