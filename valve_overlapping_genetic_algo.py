@@ -303,7 +303,9 @@ def valve_overlapping(input_valves=None,population_size=200,gen_theshold=40,cycl
     def scheduled_valves(schedule,input_valves):
         sum_timings=[]
         for i in range(len(input_valves)):
-            sum_timings.append((schedule[i]*[0]+input_valves[i][1]*[1]+(input_valves[i][0]-schedule[i])*[0])*int(LCM/(input_valves[i][0]+input_valves[i][1])))
+            to_append=input_valves[i][1]*[1]+input_valves[i][0]*[0]
+            sum_timings.append(to_append[-schedule[i]:]+to_append[:-schedule[i]])
+            #sum_timings.append((schedule[i]*[0]+input_valves[i][1]*[1]+(input_valves[i][0]-schedule[i])*[0])*int(LCM/(input_valves[i][0]+input_valves[i][1])))
         df=pd.DataFrame(sum_timings)
         sum_timings=df.sum(axis=0).to_list()
 
