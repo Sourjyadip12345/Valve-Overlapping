@@ -221,7 +221,7 @@ def analysis():
             #st.write(x_ticks)
             ax1.set_xticks(x_ticks)
             ax1.legend()
-            ax.grid(color='lightgray', linestyle='--')
+            ax1.grid(color='lightgray', linestyle='--')
             # Set labels for the axes and title
             ax1.set_xlabel('No. of gas injection wells')
             ax1.set_ylabel('Timing percentage of the day (%)')
