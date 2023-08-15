@@ -14,7 +14,7 @@ import pandas as pd
 def valve_overlapping(input_valves=None,population_size=500,gen_theshold=50,cycles=None ):
     FINAL_RESULT=[]
     FINAL_RESULT_SCORE=[]
-    for _ in range(4):    
+    for _ in range(5):    
         valves=[]
         priority=[]
         if cycles!=None: 
@@ -342,15 +342,10 @@ def valve_overlapping(input_valves=None,population_size=500,gen_theshold=50,cycl
                 else:
                     flattened.append(item)
             return flattened
-        print("CHECK HERE:")
-        print(flatten_tuple_list(scheduled_sum_timings))
-        print("Till here")
+        
         FINAL_RESULT_SCORE.append(max(flatten_tuple_list(scheduled_sum_timings)))
         FINAL_RESULT.append([schedule,[scheduled_sum_timings],"manual",priority_number])
-    print("FS")
-    print(FINAL_RESULT_SCORE)
-    print("FR")
-    print(FINAL_RESULT)
+    
     _,FINAL_RESULT=zip(*sorted(zip(FINAL_RESULT_SCORE,FINAL_RESULT), key=lambda x: x[0]))
     
     print(FINAL_RESULT_SCORE)
