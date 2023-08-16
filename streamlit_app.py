@@ -661,7 +661,7 @@ def cluster_wise_analysis():
             st.write("---")
             ###########HERE 
     except ValueError: 
-        st.write(ValueError)
+        #st.write(ValueError)
         st.warning("Data filled incorrectly! Please check again :)")
 
 
