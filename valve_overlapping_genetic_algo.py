@@ -14,7 +14,7 @@ import pandas as pd
 def valve_overlapping(input_valves=None,population_size=500,gen_theshold=50,cycles=None ):
     FINAL_RESULT=[]
     FINAL_RESULT_SCORE=[]
-    for _ in range(5):    
+    for _ in range(4):    
         valves=[]
         priority=[]
         if cycles!=None: 
@@ -63,13 +63,14 @@ def valve_overlapping(input_valves=None,population_size=500,gen_theshold=50,cycl
             #        possible=False
             #print(possible) 
             
-            if len(set(input_valves))>6:
-
-                all_permutations=[input_valves]
-            else:
-                all_permutations = list(itertools.permutations(input_valves))
 
             if possible==True:
+                all_permutations=[]
+                if len(set(input_valves))>6:
+
+                    all_permutations=[input_valves]
+                else:
+                    all_permutations = list(itertools.permutations(input_valves))
                 for perm in all_permutations:
                     
                     current_time=0
@@ -348,13 +349,13 @@ def valve_overlapping(input_valves=None,population_size=500,gen_theshold=50,cycl
     
     _,FINAL_RESULT=zip(*sorted(zip(FINAL_RESULT_SCORE,FINAL_RESULT), key=lambda x: x[0]))
     
-    print(FINAL_RESULT_SCORE)
-    print(FINAL_RESULT)
+    #print(FINAL_RESULT_SCORE)
+    #print(FINAL_RESULT)
 
     return FINAL_RESULT[0]
 
-input_valves=[(50,10,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1)]  #,(25,5,1),(55,5,1),(55,5,1),(55,5,1)
+input_valves=[(50,10,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(50,10,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1),(5,5,1)]  #,(25,5,1),(55,5,1),(55,5,1),(55,5,1)
 
 cycles=[(1,0,0,0,0,0),(1,0,0,0,0,0)]
 #print(valve_overlapping(input_valves=input_valves))
-print(valve_overlapping(cycles=cycles))
+#print(valve_overlapping(cycles=cycles))
