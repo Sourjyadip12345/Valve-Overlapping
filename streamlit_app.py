@@ -560,7 +560,7 @@ def cluster_wise_analysis():
                 sum_timings=list(map(sum, zip(*sum_timings)))
             #st.write(sum_timings)
             #st.write((shift_factor))
-            cluster_shift=min(overall_schedule)
+            cluster_shift=0
             #schedule=[x-cluster_shift for x in schedule]
             #schedule=[x if x<=len(sum_timings) else x-len(sum_timings) for x in schedule]
 
