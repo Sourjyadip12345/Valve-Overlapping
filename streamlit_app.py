@@ -15,7 +15,7 @@ import plotly.graph_objects as go
 st.set_page_config(page_title="Well Scheduling", page_icon=":alarm_clock:")
 
 def home():
-    img_glv = Image.open("images/glv.jpg")
+    img_glv = Image.open("images/M1.png")
     
     st.write("# Optimization of Time Cycle Staggering for Intermittent Gas Lift Wells Using Genetic Algorithm")
     st.write("---")
