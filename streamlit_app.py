@@ -717,7 +717,7 @@ def layout(*args):
         bottom=0,
         margin=px(0, 0, 0, 0),
         width=percent(100),
-        color="white",
+        color="black",
         text_align="center",
         height="auto",
         opacity=1
@@ -755,6 +755,8 @@ def footer():
     myargs = [
         "Made by ",
         link("https://instagram.com/amnn.sharma/", "@amansharma"),
+        " and ",
+        link("https://instagram.com/ankitgarg176/", "@ankitgarg"),
         br(),
         link("https://buymeacoffee.com/amnnsharma", image('https://i.imgur.com/thJhzOO.png')),
     ]
